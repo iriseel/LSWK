@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>LX Karaoke</title>
+        
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>“ ”</text></svg>">
+        <script
+            src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"
+            crossorigin="anonymous"
+        ></script>
+
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body>
+
+        <div class="black_screen">
+            <div class="prompt">Choose your song</div>
+
+            <div class="carousel">
+                <div class="carousel_item">
+                    <div class="song_choice">
+                        假行僧
+                    </div>
+                </div>
+                <div class="carousel_item">
+                    <div class="song_choice">
+                        假行僧
+                    </div>
+                </div>
+                <div class="carousel_item">
+                    <div class="song_choice">
+                        假行僧
+                    </div>
+                </div>
+                <div class="carousel_item">
+                    <div class="song_choice">
+                        假行僧
+                    </div>
+                </div>
+                <div class="carousel_item">
+                    <div class="song_choice">
+                        假行僧
+                    </div>
+                </div>
+            
+            
+            </div>
+
+
+
+            <video autoplay muted loop class="blackhole_bg">
+                <source src="assets/blackhole_orbit.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="disco">
+            <div class="disco_chain">
+                <img src="assets/disco_chain.png">
+            </div>
+            <div class="disco_ball">
+                <img src="assets/disco_ball_solo.gif">
+            </div>
+        </div>
+        <div class="container">
+            <div class="textbox">
+                <div class="bouncing_ball">
+                </div>
+                <p class="lyrics">
+                    UAU IAUYAO CUN NAN CAU DAO PEI
+                </p>
+        </div>
+
+
+        <video class="input_video"></video>
+        <canvas class="mouth_canvas" width="1280px" height="720px"></canvas>
+
+        <div class="audio">
+            <audio loop>
+                <source src="assets/songs/jia_xing_seng.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
