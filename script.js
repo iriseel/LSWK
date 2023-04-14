@@ -6,7 +6,6 @@ const textbox = document.querySelector(".textbox");
 const screenshot = document.querySelector(".screenshot");
 const bb = document.querySelector(".bouncing_ball");
 const disco = document.querySelector(".disco_ball");
-const song_choices = document.querySelectorAll(".song_choice");
 
 let words = "";
 let wordcount = null;
@@ -28,7 +27,7 @@ const lyrics_texts = [
 
 let lyrics_index = 0;
 
-const lyrics = document.querySelector(".lyrics");
+let lyrics = document.querySelector(".lyrics");
 
 let textHeight;
 let textHeight_max = 90;
@@ -39,52 +38,64 @@ let song_chosen = false;
 //global booleans
 let ended = false;
 
-const carousel_item = document.querySelector(".carousel_item");
-const carousel_items = document.querySelectorAll(".carousel_item");
-let delay = 0,
-    step = 10 / carousel_items.length; /* 5 is the animation duration */
-carousel_items.forEach(function (carousel_item) {
-    carousel_item.style.animationDelay = -delay + "s";
-    delay += step;
-});
-
 //AUDIO CTX
-const audioContext = new AudioContext();
-navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-    const source = audioContext.createMediaStreamSource(stream);
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 512;
-    source.connect(analyser);
+document.addEventListener("click", init_audio);
 
-    setInterval(() => {
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-        analyser.getByteFrequencyData(dataArray);
-        //??Why is average always returning 0? It worked for a bit??
-        const average =
-            dataArray.reduce((sum, value) => sum + value) / bufferLength;
-        const size = Math.max(average / 6, 1);
+function init_audio() {
+    const audioContext = new AudioContext();
+    if (audioContext.state == "suspended") {
+        console.log("suspended");
+    }
+    navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+            const source = audioContext.createMediaStreamSource(stream);
+            const analyser = audioContext.createAnalyser();
+            analyser.fftSize = 512;
+            source.connect(analyser);
+            console.log(source);
 
-        disco.style.transform = `scale(${(size, size)})`;
-        // disco.style.width = size * 10 + "px";
-        // disco.style.height = size * 10 + "px";
-    }, 50);
-});
+            setInterval(() => {
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                analyser.getByteFrequencyData(dataArray);
+                //??Why is average always returning 0? It worked for a bit??
+                const average =
+                    dataArray.reduce((sum, value) => sum + value) /
+                    bufferLength;
+                const size = Math.max(average / 6, 1);
+
+                console.log("average is" + average);
+                disco.style.transform = `scale(${(size, size)})`;
+                // disco.style.width = size * 10 + "px";
+                // disco.style.height = size * 10 + "px";
+            }, 50);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+
+    document.removeEventListener("click", init_audio);
+}
 
 song_choices.forEach(function (song_choice) {
     song_choice.addEventListener("click", function () {
         song_chosen = true;
+        // onResults(results);
     });
 });
 //FACEMESH STUFF
 // Results Handler
 function onResults(results) {
-    if (song_chosen) {
-        remove_black_screen();
-        start_song();
-    }
     //need this if statement, or else video freezes when it can't find the multiFaceLandmarks (e.g. when user has turned their head away from the camera)
     if (results.multiFaceLandmarks && !ended) {
+        //??This is logging when my webcam is covered??
+        // console.log("sees landmarks");
+        //??Is there a way to delay the song and karaoke ball starting for like 3 seconds to give singers prep time?
+        if (song_chosen) {
+            remove_black_screen();
+            start_song();
+        }
         //needs [0] bc the array of results.multiFaceLandmarks has multiple things inside it, but facemesh points are stored in [0]
         if (results.multiFaceLandmarks[0]) {
             //Facemesh/mediapipe gives the x and y values of its landmarks as percentages of the total webcam view size (where 0 is leftmost, 1 is rightmost), rather than specific numerical coordinates.
@@ -135,6 +146,10 @@ function bounce_ball(screenshot_data) {
 }
 
 function change_lyrics() {
+    const lyrics_span = document.querySelector(".span_lyrics");
+    lyrics = document.querySelector(".lyrics");
+    console.log(lyrics);
+
     if (lyrics_index > lyrics_texts.length - 1) lyrics_index = 0;
     lyrics.innerHTML = lyrics_texts[lyrics_index];
 
@@ -149,14 +164,54 @@ function change_lyrics() {
     // line_time = wordcount * word_time;
 
     //??Why does the screenshotting not replace words when this works?
-    const lyrics_span = document.createElement("span");
-    lyrics_span.classList.add("span_lyrics");
     lyrics_span.dataset.text = lyrics_texts[lyrics_index];
-    lyrics_span.appendChild(lyrics.cloneNode(true));
-    lyrics.parentNode.replaceChild(lyrics_span, lyrics);
+
+    bouncing();
 }
 
 change_lyrics();
+
+function bouncing() {
+    const words = document.querySelectorAll(".word");
+    const word_positions = [];
+    if (!words) return;
+
+    const time = 0.5;
+
+    words.forEach(function (word) {
+        const rect = word.getBoundingClientRect();
+        const top = rect.top - rect.height / 2;
+        const left = rect.left + rect.width / 2;
+
+        word_positions.push({
+            top: top,
+            left: left,
+        });
+    });
+
+    bounce_animation(word_positions);
+}
+
+function lerp(start, end, time) {
+    return start * (1 - time) + end * time;
+}
+
+//??Figure out animations
+function bounce_animation(word_pos) {
+    const arr = word_pos;
+    let ind = 0;
+    const animate = () => {
+        if (arr.length <= 0) return;
+        bb.style.top = arr[ind].top + "px";
+
+        bb.style.left = arr[ind].left + "px";
+        arr.shift();
+        // console.log("animating");
+        // requestAnimationFrame(animate);
+        setTimeout(() => animate(), 500);
+    };
+    animate();
+}
 
 function add_screenshot(screenshot_data) {
     // if (beat_passed) {
@@ -180,10 +235,10 @@ function add_screenshot(screenshot_data) {
         new_img.classList.add("screenshot");
         new_img.setAttribute("src", screenshot_data);
 
-        if (word_num < wordcount - 2) {
-            words[word_index].replaceWith(new_img);
-            word_index += 2;
-        }
+        // if (word_num < wordcount - 2) {
+        //     words[word_index].replaceWith(new_img);
+        //     word_index += 2;
+        // }
 
         setTimeout(() => (screenshotted = true), word_time);
     }

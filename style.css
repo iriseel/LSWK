@@ -44,6 +44,39 @@ body {
     flex-flow: column wrap;
     align-content: center;
     transition: opacity 0.5s;
+
+    /* display:none; */
+}
+
+.carousel {
+    width: 50%;
+    height: 50%;
+    margin: 20px auto;
+    position: relative;
+    top:40%;
+    transform: translateY(-50%);
+
+    background-image: url('assets/hole_emoji.png');
+    background-size:contain;
+    background-repeat:no-repeat;
+    filter: drop-shadow(5px 5px 10px white);
+
+}
+
+.carousel_item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation:
+        move-x 10s linear infinite,
+        move-y 10s linear infinite;
+
+        white-space: nowrap;
+}
+
+.carousel:hover .carousel_item {
+    animation-play-state: paused;
 }
 
 .blackhole_bg {
@@ -189,19 +222,22 @@ canvas {
     width:1em;
     height:1em;
     border-radius: 50%;
+    transform: translate(-50%, -50%);
 
 
     background: yellow no-repeat center;
     background-size: 100% auto;
 
-    animation: bounce 2s ease-in-out infinite;
+    transition: all .5s ease-in-out;
+
+    /* animation: bounce 2s ease-in-out infinite; */
 }
 
 /* ??How to get it to move right incrementally, without restarting? */
 @keyframes bounce {
     0% {
         transform: translateY(0);
-        left: 0;
+        /* left: 0; */
     }
 
     50% {
@@ -210,39 +246,10 @@ canvas {
 
     100% {
         transform: translateY(0);
-        left: calc(100% - 50px);
+        /* left: calc(100% - 50px); */
     }
 }
 
-
-.carousel {
-    width: 500px;
-    height: 210px;
-    margin: 20px auto;
-    position: relative;
-    border-radius: 50%;
-
-    background-image: url('https://images.squarespace-cdn.com/content/v1/631a62fdb946f242a3f0ad3d/18c5a446-6238-46c3-a5a6-976459f30055/plate.png?format=500px');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: top center;
-    z-index:20;
-}
-
-.carousel_item {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation:
-        move-x 10s linear infinite,
-        move-y 10s linear infinite;
-    font-size: 1.4rem;
-}
-
-.carousel:hover .carousel_item {
-    animation-play-state: paused;
-}
 
 @keyframes move-x {
     0% {
@@ -297,3 +304,4 @@ canvas {
         animation-timing-function: ease-out;
     }
 }
+
