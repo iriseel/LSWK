@@ -33,6 +33,7 @@ let textHeight;
 let textHeight_max = 90;
 let filter = 8;
 let filter_max = 8;
+let bb_height_max = 100;
 
 let song_chosen = false;
 //global booleans
@@ -67,6 +68,10 @@ function init_audio() {
 
                 console.log("average is" + average);
                 disco.style.transform = `scale(${(size, size)})`;
+                bb.style.transform = `translateY(-${Math.floor(
+                    map(average, 0, 80, 0, bb_height_max)
+                )}vh)`;
+
                 // disco.style.width = size * 10 + "px";
                 // disco.style.height = size * 10 + "px";
             }, 50);
@@ -104,7 +109,7 @@ function onResults(results) {
             let crop_width_percent =
                 results.multiFaceLandmarks[0][432].x - crop_x_percent;
             let crop_height_percent =
-                results.multiFaceLandmarks[0][199].y - crop_y_percent;
+                results.multiFaceLandmarks[0][200].y - crop_y_percent;
 
             // multiply the percentages by the mouthCanvasElement to get their absolute x,y values, rather than just percentages
             let crop_x = crop_x_percent * mouthCanvasElement.width;
@@ -129,8 +134,8 @@ function onResults(results) {
             );
 
             let screenshot_data = mouthCanvasElement.toDataURL("image/png");
-            add_screenshot(screenshot_data);
             bounce_ball(screenshot_data);
+            log_beat();
 
             //Using this right_eye_face_ratio to return the ratio as a percentage (percentage of face that eye takes up) rather than absolute values, and therefore right_eye_face_ratio won't change with the user's distance from the webcam
             let face_bottom_y = results.multiFaceLandmarks[0][152].y;
@@ -192,10 +197,6 @@ function bouncing() {
     bounce_animation(word_positions);
 }
 
-function lerp(start, end, time) {
-    return start * (1 - time) + end * time;
-}
-
 //??Figure out animations
 function bounce_animation(word_pos) {
     const arr = word_pos;
@@ -213,79 +214,18 @@ function bounce_animation(word_pos) {
     animate();
 }
 
-function add_screenshot(screenshot_data) {
-    // if (beat_passed) {
-
-    //     setTimeout(() => (beat_passed = true), 500);
-    // }
-    //removing all screenshots, changing lyrics
+function log_beat() {
+    //changing lyrics
     if (word_num >= wordcount) {
-        document.querySelectorAll(".screenshot").forEach((e) => e.remove());
         word_num = 0;
-        console.log("removing");
         lyrics_index++;
         change_lyrics();
-        word_index = 0;
     } else if (screenshotted) {
         screenshotted = false;
         word_num++;
-        console.log(word_num);
-
-        const new_img = document.createElement("img");
-        new_img.classList.add("screenshot");
-        new_img.setAttribute("src", screenshot_data);
-
-        // if (word_num < wordcount - 2) {
-        //     words[word_index].replaceWith(new_img);
-        //     word_index += 2;
-        // }
 
         setTimeout(() => (screenshotted = true), word_time);
     }
-}
-
-function set_eye_height(
-    face_bottom_y,
-    face_top_y,
-    eye_bottom_y,
-    eye_top_y,
-    textbox,
-    text,
-    texts
-) {
-    let eye_face_ratio =
-        ((eye_bottom_y - eye_top_y) / (face_bottom_y - face_top_y)) * 10000;
-
-    // console.log(eye_face_ratio);
-
-    if (eye_face_ratio <= 200) {
-        change_text(text, texts);
-        textHeight = 0;
-        filter = 0;
-    } else if (eye_face_ratio >= 450) {
-        textHeight = textHeight_max;
-        filter = filter_max;
-    } else if (eye_face_ratio > 200 && eye_face_ratio < 450) {
-        textHeight = Math.abs(map(eye_face_ratio, 200, 450, 0, textHeight_max));
-        filter = map(eye_face_ratio, 200, 450, 0, filter_max);
-    }
-
-    text.style.filter = `blur(${filter}px)`;
-
-    textbox.style.height = `${Math.floor(textHeight)}vh`;
-
-    let text_coords = textbox.getBoundingClientRect();
-
-    svg_path = "";
-    // must input these paths in order (as if drawing the polygon)
-    svg_path += `${text_coords.left},${text_coords.top} `;
-    svg_path += `${text_coords.right},${text_coords.top} `;
-    svg_path += `${text_coords.right},${text_coords.bottom} `;
-    svg_path += `${text_coords.left},${text_coords.bottom} `;
-
-    textbox.style[
-        "-webkit-mask"
-    ] = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon points="${svg_path}" fill="black"/></svg>') 0/100% 100%, linear-gradient(#fff, #fff)`;
 }
 
 // Create Facemesh
@@ -328,7 +268,11 @@ function map(in_val, in_min, in_max, out_min, out_max) {
     );
 }
 
-const round = (val) => Math.ceil(val / 20) * 20;
+// function lerp(start, end, time) {
+//     return start * (1 - time) + end * time;
+// }
+
+// const round = (val) => Math.ceil(val / 20) * 20;
 
 function remove_black_screen() {
     document.querySelector(".black_screen").style.opacity = 0;

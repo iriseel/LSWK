@@ -22,11 +22,12 @@ body {
     position: relative;
 
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, sans-serif;
-    font-size: 10vmin;
+    font-size: clamp(1rem, 13vw, 5rem);
     line-height: 14vmin;
     color: white;
     text-align:center;
     text-shadow: 4px 4px 4px black;
+    background:black;
 
     overflow:hidden;
 
@@ -141,6 +142,7 @@ canvas {
     z-index: -1;
 
     transition: filter 1s, width 1s, height 1s, top 1s, left 1s;
+    opacity:0;
 }
 
 
@@ -226,7 +228,7 @@ canvas {
 
 
     background: yellow no-repeat center;
-    background-size: 100% auto;
+    background-size: 100% 100%;
 
     transition: all .5s ease-in-out;
 
