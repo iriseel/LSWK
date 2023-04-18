@@ -6,17 +6,18 @@ const textbox = document.querySelector(".textbox");
 const screenshot = document.querySelector(".screenshot");
 const bb = document.querySelector(".bouncing_ball");
 const disco = document.querySelector(".disco_ball");
+const audio = document.querySelector("audio");
+const mv = document.querySelector(".mv video");
 
 let words = "";
 let wordcount = null;
-let word_time = 600;
 let word_num = 0;
+let beat_time = null;
 
 let index = 0;
 let time = 0;
-let word_index = 0;
 
-let screenshotted = true;
+let beat_passed = true;
 
 const lyrics_texts = [
     "UAU IAUYAO CUN NAN CAU DAO PEI",
@@ -25,7 +26,14 @@ const lyrics_texts = [
     "DAN BU ZHI DAO UA SHI SHEI",
 ];
 
-let lyrics_index = 0;
+// const words_per_lines = [];
+// for (let i = 0; i < lyrics_texts.length; i++) {
+//     const words_per_line = [word_count(lyrics_texts[i])];
+//     words_per_lines.push(words_per_line);
+// }
+// console.log(words_per_lines);
+
+let lyrics_index = -1;
 
 let lyrics = document.querySelector(".lyrics");
 
@@ -44,9 +52,19 @@ document.addEventListener("click", init_audio);
 
 function init_audio() {
     const audioContext = new AudioContext();
-    if (audioContext.state == "suspended") {
-        console.log("suspended");
-    }
+
+    //??Trying to calculate bpm
+    // const song_source = audioContext.createMediaElementSource(audio);
+    // song_source.connect(audioContext.destination);
+    // // Create a new instance of a BPM detector
+    // const detector = new window.BPM();
+
+    // // Analyze the audio file and get the BPM
+    // detector.on("bpm", function (bpm) {
+    //     console.log(`BPM: ${bpm}`);
+    // });
+    // song_source.connect(detector);
+
     navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
@@ -54,19 +72,18 @@ function init_audio() {
             const analyser = audioContext.createAnalyser();
             analyser.fftSize = 512;
             source.connect(analyser);
-            console.log(source);
+            // console.log(source);
 
             setInterval(() => {
                 const bufferLength = analyser.frequencyBinCount;
                 const dataArray = new Uint8Array(bufferLength);
                 analyser.getByteFrequencyData(dataArray);
-                //??Why is average always returning 0? It worked for a bit??
                 const average =
                     dataArray.reduce((sum, value) => sum + value) /
                     bufferLength;
-                const size = Math.max(average / 6, 1);
+                const size = map(average, 0, 80, 1, 5);
 
-                console.log("average is" + average);
+                // console.log("average is" + average);
                 disco.style.transform = `scale(${(size, size)})`;
                 bb.style.transform = `translateY(-${Math.floor(
                     map(average, 0, 80, 0, bb_height_max)
@@ -86,21 +103,37 @@ function init_audio() {
 song_choices.forEach(function (song_choice) {
     song_choice.addEventListener("click", function () {
         song_chosen = true;
-        // onResults(results);
+
+        remove_black_screen();
+        countdown(4);
     });
 });
+
+function countdown(count) {
+    if (count == 0) {
+        faceMesh.onResults(onResults);
+        document.querySelector(".countdown").style.opacity = 0;
+        setTimeout(() => {
+            document.querySelector(".countdown").style.display = "none";
+        }, 500);
+    } else {
+        count--;
+        document.querySelector(".countdown .count").innerHTML = count;
+        setTimeout(() => countdown(count), 1000);
+    }
+}
+
 //FACEMESH STUFF
 // Results Handler
 function onResults(results) {
     //need this if statement, or else video freezes when it can't find the multiFaceLandmarks (e.g. when user has turned their head away from the camera)
     if (results.multiFaceLandmarks && !ended) {
-        //??This is logging when my webcam is covered??
-        // console.log("sees landmarks");
-        //??Is there a way to delay the song and karaoke ball starting for like 3 seconds to give singers prep time?
-        if (song_chosen) {
-            remove_black_screen();
-            start_song();
-        }
+        if (!song_chosen) return;
+        start_song();
+        let bpm = 127;
+        //??This beat time doesn't seem to be calculated correctly??
+        beat_time = ((bpm / 60) * 1000) / 2;
+
         //needs [0] bc the array of results.multiFaceLandmarks has multiple things inside it, but facemesh points are stored in [0]
         if (results.multiFaceLandmarks[0]) {
             //Facemesh/mediapipe gives the x and y values of its landmarks as percentages of the total webcam view size (where 0 is leftmost, 1 is rightmost), rather than specific numerical coordinates.
@@ -137,10 +170,6 @@ function onResults(results) {
             bounce_ball(screenshot_data);
             log_beat();
 
-            //Using this right_eye_face_ratio to return the ratio as a percentage (percentage of face that eye takes up) rather than absolute values, and therefore right_eye_face_ratio won't change with the user's distance from the webcam
-            let face_bottom_y = results.multiFaceLandmarks[0][152].y;
-            let face_top_y = results.multiFaceLandmarks[0][10].y;
-
             mouthCanvasCtx.restore();
         }
     }
@@ -148,6 +177,22 @@ function onResults(results) {
 
 function bounce_ball(screenshot_data) {
     bb.style.backgroundImage = `url(${screenshot_data})`;
+}
+
+function log_beat() {
+    //changing lyrics
+    if (word_num >= wordcount) {
+        console.log("changing lyrics");
+        word_num = 0;
+        lyrics_index++;
+        change_lyrics();
+    } else if (beat_passed) {
+        beat_passed = false;
+        word_num++;
+        console.log("wordnum", word_num);
+
+        setTimeout(() => (beat_passed = true), beat_time);
+    }
 }
 
 function change_lyrics() {
@@ -165,17 +210,14 @@ function change_lyrics() {
 
     words = document.querySelectorAll(".word");
     wordcount = words.length;
-    console.log(wordcount);
-    // line_time = wordcount * word_time;
+    console.log("wordcount", wordcount);
 
-    //??Why does the screenshotting not replace words when this works?
     lyrics_span.dataset.text = lyrics_texts[lyrics_index];
 
     bouncing();
 }
 
 change_lyrics();
-
 function bouncing() {
     const words = document.querySelectorAll(".word");
     const word_positions = [];
@@ -214,20 +256,6 @@ function bounce_animation(word_pos) {
     animate();
 }
 
-function log_beat() {
-    //changing lyrics
-    if (word_num >= wordcount) {
-        word_num = 0;
-        lyrics_index++;
-        change_lyrics();
-    } else if (screenshotted) {
-        screenshotted = false;
-        word_num++;
-
-        setTimeout(() => (screenshotted = true), word_time);
-    }
-}
-
 // Create Facemesh
 const faceMesh = new FaceMesh({
     locateFile: (file) => {
@@ -244,7 +272,7 @@ faceMesh.setOptions({
 });
 
 // Event Listener
-faceMesh.onResults(onResults);
+// faceMesh.onResults(onResults);
 
 // Create Camera
 const camera = new Camera(videoElement, {
@@ -274,6 +302,10 @@ function map(in_val, in_min, in_max, out_min, out_max) {
 
 // const round = (val) => Math.ceil(val / 20) * 20;
 
+function word_count(str) {
+    return str.split(" ").length;
+}
+
 function remove_black_screen() {
     document.querySelector(".black_screen").style.opacity = 0;
     setTimeout(() => {
@@ -282,7 +314,8 @@ function remove_black_screen() {
 }
 
 function start_song() {
-    document.querySelector("audio").play();
+    audio.play();
+    mv.play();
 }
 
 function clear_canvas() {
@@ -292,4 +325,45 @@ function clear_canvas() {
         mouthCanvasElement.width,
         mouthCanvasElement.height
     );
+}
+
+//making stars
+function createStars() {
+    const starTargetSize = 75;
+    const starMinSize = 15;
+    const starChance = 0.1;
+    const scrollWidth = document.scrollingElement.scrollWidth;
+    const scrollHeight = document.scrollingElement.scrollHeight;
+    const rows = Math.round(scrollHeight / starTargetSize);
+    const columns = Math.round(scrollWidth / starTargetSize);
+    const w = Math.floor(scrollWidth / columns);
+    const h = scrollHeight / rows;
+
+    const fragment = document.createDocumentFragment();
+
+    for (let y = 0; y < rows; ++y) {
+        for (let x = 0; x < columns; ++x) {
+            if (Math.random() < starChance) {
+                const size =
+                    starMinSize +
+                    Math.random() * (starTargetSize - starMinSize);
+                fragment.appendChild(getStar(x, y, w, h, size));
+            }
+        }
+    }
+
+    document.body.appendChild(fragment);
+}
+
+createStars();
+function getStar(x, y, w, h, size) {
+    const star = document.createElement("div");
+    star.className = `background-star background-star-${Math.ceil(
+        Math.random() * 3
+    )}`;
+    star.style.left = `${Math.floor(x * w)}px`;
+    star.style.top = `${Math.floor(y * h)}px`;
+    star.style.width = Math.floor(size) + "px";
+    star.style.height = Math.floor(size) + "px";
+    return star;
 }

@@ -22,6 +22,21 @@
             crossorigin="anonymous"
         ></script>
 
+        <!-- <script src="https://unpkg.com/bpm-js@2.0.0/bpm.min.js"></script> -->
+
+        <!-- adobe font import -->
+        <script>
+            (function (d) {
+                var config = {
+                    kitId: 'dxg2uea',
+                    scriptTimeout: 3000,
+                    async: true
+                },
+                    h = d.documentElement, t = setTimeout(function () { h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive"; }, config.scriptTimeout), tk = d.createElement("script"), f = false, s = d.getElementsByTagName("script")[0], a; h.className += " wf-loading"; tk.src = 'https://use.typekit.net/' + config.kitId + '.js'; tk.async = true; tk.onload = tk.onreadystatechange = function () { a = this.readyState; if (f || a && a != "complete" && a != "loaded") return; f = true; clearTimeout(t); try { Typekit.load(config) } catch (e) { } }; s.parentNode.insertBefore(tk, s)
+            })(document);
+        </script>
+
+
         <link rel="stylesheet" href="style.css" />
     </head>
 
@@ -31,46 +46,70 @@
             <div class="prompt">Choose your song</div>
 
             <div class="carousel">
+                <div class="carousel_bg"></div>
                 <div class="carousel_item">
                     <div class="song_choice">
-                        假行僧
+                        Jia Xing Seng
                     </div>
                 </div>
                 <div class="carousel_item">
                     <div class="song_choice">
-                        假行僧
+                        Qi Li Xiang
                     </div>
                 </div>
                 <div class="carousel_item">
                     <div class="song_choice">
-                        假行僧
+                        Hong Dou
                     </div>
                 </div>
                 <div class="carousel_item">
                     <div class="song_choice">
-                        假行僧
+                        Hao Le Day
                     </div>
                 </div>
                 <div class="carousel_item">
                     <div class="song_choice">
-                        假行僧
+                        Jia Xing Seng
+                    </div>
+                </div>
+                <div class="carousel_item">
+                    <div class="song_choice">
+                        Hong Dou
                     </div>
                 </div>
             </div>
 
-            <video autoplay muted loop class="blackhole_bg">
+            <!-- <video autoplay muted loop class="blackhole_bg">
                 <source src="assets/blackhole_orbit.mp4" type="video/mp4">
-            </video>
+            </video> -->
+        </div>
+
+        <div class="countdown">
+            <p>
+                Song starting in ...
+            </p>
+            <p class="count">
+
+            </p>
         </div>
 
         <div class="disco">
             <div class="disco_chain">
                 <img src="assets/disco_chain.png">
             </div>
+            <div class="disco_ball_container">
             <div class="disco_ball">
-                <img src="assets/disco_ball_solo.gif">
+                <!-- <img src="assets/disco_ball_solo.gif"> -->
+            </div>
             </div>
         </div>
+
+        <div class="mv">
+            <video muted loop>
+                <source src="assets/vids/qi_li_xiang.mp4" type="video/mp4">
+            </video>
+        </div>
+
         <div class="container">
             <div class="textbox">
                 <div class="bouncing_ball">

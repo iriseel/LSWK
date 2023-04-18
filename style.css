@@ -6,6 +6,7 @@ html {
 * {
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
 }
 
 *::before, *::after{
@@ -21,12 +22,14 @@ body {
     overflow: hidden;
     position: relative;
 
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, sans-serif;
+    font-family: "source-han-serif-sc", serif;
+        font-weight: 400;
+        font-style: normal;
     font-size: clamp(1rem, 13vw, 5rem);
-    line-height: 14vmin;
+    line-height: clamp(1rem, 13vw, 5rem);
     color: white;
     text-align:center;
-    text-shadow: 4px 4px 4px black;
+    /* text-shadow: 4px 4px 4px black; */
     background:black;
 
     overflow:hidden;
@@ -46,22 +49,46 @@ body {
     align-content: center;
     transition: opacity 0.5s;
 
+    font-size:.5em;
+
     /* display:none; */
 }
 
 .carousel {
-    width: 50%;
-    height: 50%;
+    font-size:1.5em;
+    width: 40%;
+    height:60%;
     margin: 20px auto;
     position: relative;
     top:40%;
     transform: translateY(-50%);
 
-    background-image: url('assets/hole_emoji.png');
+    /* background-image: url('assets/hole_emoji.png');
     background-size:contain;
-    background-repeat:no-repeat;
-    filter: drop-shadow(5px 5px 10px white);
+    background-repeat:no-repeat; */
+    /* filter: drop-shadow(5px 5px 10px white); */
 
+}
+
+/* had to add this so that black hole could be smaller than/not touch .carousel-items */
+.carousel_bg {
+    width: 25%;
+        aspect-ratio: 1;
+        position: relative;
+        top: 50%;
+        left:50%;
+        transform: translate(-50%, -50%);
+    
+        border-radius: 50%;
+        background: black;
+        filter: blur(1.5px);
+    
+        box-shadow: 0 0 0vw 2vw black,
+            0 0 4vw 0vw #FFCA14,
+            0px 0px 10vw #FF3E00;
+
+
+    filter: drop-shadow(5px 5px 10px white);
 }
 
 .carousel_item {
@@ -74,6 +101,12 @@ body {
         move-y 10s linear infinite;
 
         white-space: nowrap;
+
+    filter: drop-shadow(2px 2px 3px white);
+}
+
+.carousel_item * {
+    transform: skew(-15deg, 0deg);
 }
 
 .carousel:hover .carousel_item {
@@ -98,29 +131,86 @@ body {
     color:blue;
 }
 
+.countdown {
+    position:fixed;
+    z-index:90;
+    width:100vw;
+    height:100vh;
+    background:black;
+    transition: opacity 0.5s;
+    display:flex;
+    flex-flow:column wrap;
+    justify-content: center;
+    align-content: center;
+}
+
+.countdown .count {
+    
+}
+
+/* KARAOKE PAGE */
+/* ???Should I just get rid of the disco? */
 .disco {
     width:15vw;
     height:50vh;
     position:fixed;
+    z-index:1;
     top:0;
     left:50%;
     transform: translateX(-50%);
+    filter: drop-shadow(0px 0px 20px white);
+    mix-blend-mode:soft-light;
+    display:none;
 }
 
 .disco_chain {
     position: fixed;
     z-index: 9;
-    top:-15vh;
+    top:-12vh;
     left:50%;
+    transform:translateX(-50%);
 }
+
+/* .disco_ball_container {
+    transform-origin: top center;
+    width: 10vw;
+    height:10vw;
+    animation: spin 5s linear infinite;
+} */
+
 
 .disco_ball {
     position:fixed;
     z-index: 10;
     bottom:0;
-    left: 0%;
-    transform-origin: top center;
+    left:0;
+    transform-origin: center;
+    width: 6vw;
+    aspect-ratio: 1;
+    background: black;
+    border-radius: 50%;
+    filter: blur(1.5px);
+
+    box-shadow: 1.5vw 0 0vw 2vw black,
+        -.25vw .25vw 4vw 0vw #FFCA14,
+        0px 0px 10vw #FF3E00;
+
+    /* animation: spin 5s linear infinite; */
+
 }
+
+
+/* ??how to make this spin on center?? */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(-360deg)
+    }
+}
+
 
 img {
     max-width:100%;
@@ -145,7 +235,6 @@ canvas {
     opacity:0;
 }
 
-
 .input_video {
     display:none;
 }
@@ -161,7 +250,7 @@ canvas {
 }
 
 .textbox {
-    height:auto;
+    height:1.5em;
     margin:1rem;
     /* background: blue; */
     /* width: fit-content； */
@@ -175,7 +264,7 @@ canvas {
     color: white;
     display:block;
 
-    text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+    /* text-shadow: 0 0 3px rgba(0, 0, 0, 1); */
 }
 
 .span_lyrics p {
@@ -195,8 +284,32 @@ canvas {
     transform: translate(0%, -100%);
     width: 100%;
     animation: run-text 5s infinite linear;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 1);
+    /* text-shadow: 0 0 3px rgba(255, 255, 255, 1); */
     
+}
+
+.mv {
+    position:fixed;
+    z-index: -1;
+    top:0;
+    left:0;
+    background:yellow;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-flow:column wrap;
+    justify-content:center;
+    align-content:center;
+    overflow:hidden;
+}
+
+.mv video {
+    margin-top:-20px;
+    filter:blur(70px);
+    min-width:110%;
+    /* ??Not sure this will work since not all the vids have the same aspect-ratio */
+    /* but min-height:110% made width smaller than 110% :( */
+    aspect-ratio: 9/16;
 }
 
 @keyframes run-text {
@@ -231,11 +344,14 @@ canvas {
     background-size: 100% 100%;
 
     transition: all .5s ease-in-out;
+    
+    filter: drop-shadow(0px 0px 15px white);
 
     /* animation: bounce 2s ease-in-out infinite; */
 }
 
-/* ??How to get it to move right incrementally, without restarting? */
+
+
 @keyframes bounce {
     0% {
         transform: translateY(0);
@@ -307,3 +423,47 @@ canvas {
     }
 }
 
+
+/* BACKGROUND STARS */
+
+.background-star {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 101;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url('assets/img/SVG/star.svg');
+    animation: pulse 2s linear infinite;
+}
+
+.background-star-2 {
+    background-image: url('assets/img/SVG/star_2.svg');
+    animation: pulse 2s linear infinite;
+    animation-delay:1s;
+    transform: scale(0.1);
+        
+}
+
+@keyframes pulse {
+    0% {transform: scale(0.8)}
+     90% {transform: scale(0.1)
+    } 
+     100% {transform: scale(0.8)}
+
+     /* ??this is doing a weird drop before ascending? */
+     /* 
+         0% {
+             transform: scale(0.45) translateY(0%)
+         }
+    
+         90% {
+             transform: scale(0.1) translateY(-100vh)
+         }
+    
+         100% {
+             transform: scale(0.45) translateY(-100vh)
+         }
+          */
+}
