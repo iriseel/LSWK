@@ -5,7 +5,7 @@
         <title>LX Karaoke</title>
         
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>“ ”</text></svg>">
-        <script
+        <!-- <script
             src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
             crossorigin="anonymous"
         ></script>
@@ -20,11 +20,19 @@
         <script
             src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"
             crossorigin="anonymous"
-        ></script>
-
-        <!-- <script src="https://unpkg.com/bpm-js@2.0.0/bpm.min.js"></script> -->
+        ></script> -->
 
         <!-- adobe font import -->
+        <script>
+            (function (d) {
+                var config = {
+                    kitId: 'dxg2uea',
+                    scriptTimeout: 3000,
+                    async: true
+                },
+                    h = d.documentElement, t = setTimeout(function () { h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive"; }, config.scriptTimeout), tk = d.createElement("script"), f = false, s = d.getElementsByTagName("script")[0], a; h.className += " wf-loading"; tk.src = 'https://use.typekit.net/' + config.kitId + '.js'; tk.async = true; tk.onload = tk.onreadystatechange = function () { a = this.readyState; if (f || a && a != "complete" && a != "loaded") return; f = true; clearTimeout(t); try { Typekit.load(config) } catch (e) { } }; s.parentNode.insertBefore(tk, s)
+            })(document);
+        </script>
         <script>
             (function (d) {
                 var config = {
@@ -48,12 +56,12 @@
             <div class="carousel">
                 <div class="carousel_bg"></div>
                 <div class="carousel_item">
-                    <div class="song_choice">
-                        Jia Xing Seng
+                    <div class="song_choice guang-hui-sui-yue">
+                        Guang Hui Sui Yue
                     </div>
                 </div>
                 <div class="carousel_item">
-                    <div class="song_choice">
+                    <div class="song_choice qi-li-xiang">
                         Qi Li Xiang
                     </div>
                 </div>
@@ -68,13 +76,13 @@
                     </div>
                 </div>
                 <div class="carousel_item">
-                    <div class="song_choice">
+                    <div class="song_choice jia-xing-seng">
                         Jia Xing Seng
                     </div>
                 </div>
                 <div class="carousel_item">
                     <div class="song_choice">
-                        Hong Dou
+                        Bi Hu Man Bu
                     </div>
                 </div>
             </div>
@@ -93,6 +101,10 @@
             </p>
         </div>
 
+        <div class="back">
+            Back
+        </div>
+
         <div class="disco">
             <div class="disco_chain">
                 <img src="assets/disco_chain.png">
@@ -105,15 +117,12 @@
         </div>
 
         <div class="mv">
-            <video muted loop>
-                <source src="assets/vids/qi_li_xiang.mp4" type="video/mp4">
-            </video>
         </div>
 
         <div class="container">
             <div class="textbox">
-                <div class="bouncing_ball">
-                </div>
+                <!-- <div class="bouncing_ball">
+                </div> -->
                 <span class="span_lyrics">
                 <p class="lyrics">
                     UAU IAUYAO CUN NAN CAU DAO PEI
@@ -122,15 +131,14 @@
         </div>
 
 
+        <div class="bg">
+            
+        </div>
+
         <video class="input_video"></video>
         <canvas class="mouth_canvas" width="1280px" height="720px"></canvas>
 
-        <div class="audio">
-            <audio loop>
-                <source src="assets/songs/jia_xing_seng.mp3" type="audio/mpeg">
-            </audio>
-        </div>
-
+        <!-- <script src="bb.js"></script> -->
         <script src="homepage.js"></script>
         <script src="script.js"></script>
     </body>

@@ -1,3 +1,7 @@
+:root {
+    --lyrics_speed: 1s;
+}
+
 html {
     box-sizing: border-box;
     
@@ -22,17 +26,16 @@ body {
     overflow: hidden;
     position: relative;
 
-    font-family: "source-han-serif-sc", serif;
+    /* font-family: "source-han-serif-sc", serif;
         font-weight: 400;
-        font-style: normal;
+        font-style: normal; */
+    font-family: "tt-songti-chs-variable", sans-serif;
     font-size: clamp(1rem, 13vw, 5rem);
     line-height: clamp(1rem, 13vw, 5rem);
     color: white;
     text-align:center;
     /* text-shadow: 4px 4px 4px black; */
     background:black;
-
-    overflow:hidden;
 
 }
 
@@ -55,18 +58,12 @@ body {
 }
 
 .carousel {
-    font-size:1.5em;
     width: 40%;
     height:60%;
     margin: 20px auto;
     position: relative;
     top:40%;
     transform: translateY(-50%);
-
-    /* background-image: url('assets/hole_emoji.png');
-    background-size:contain;
-    background-repeat:no-repeat; */
-    /* filter: drop-shadow(5px 5px 10px white); */
 
 }
 
@@ -98,11 +95,12 @@ body {
     transform: translate(-50%, -50%);
     animation:
         move-x 10s linear infinite,
-        move-y 10s linear infinite;
+        move-y 10s linear infinite,
+        glow_small 1s ease-in-out infinite alternate;
 
-        white-space: nowrap;
+    white-space: nowrap;
 
-    filter: drop-shadow(2px 2px 3px white);
+    filter: drop-shadow(0px 0px 5px white);
 }
 
 .carousel_item * {
@@ -137,11 +135,13 @@ body {
     width:100vw;
     height:100vh;
     background:black;
-    transition: opacity 0.5s;
     display:flex;
     flex-flow:column wrap;
     justify-content: center;
     align-content: center;
+
+    transition: opacity 0.5s;
+
 }
 
 .countdown .count {
@@ -149,6 +149,17 @@ body {
 }
 
 /* KARAOKE PAGE */
+.back {
+    position: fixed;
+    z-index:10;
+    color:white;
+    opacity: .75;
+    font-size:.5em;
+    top:.25em;
+    left:.5em;
+    cursor: pointer;
+}
+
 /* ???Should I just get rid of the disco? */
 .disco {
     width:15vw;
@@ -263,27 +274,36 @@ canvas {
     white-space: nowrap;
     color: white;
     display:block;
+    overflow: visible;
+    opacity: .85;
 
     /* text-shadow: 0 0 3px rgba(0, 0, 0, 1); */
 }
 
 .span_lyrics p {
     display: inline;
+
 }
 
 .span_lyrics::after {
     content: attr(data-text);
     position: absolute;
+    z-index:10;
     /* background: tomato; */
-    /* ??Why is the blue text animation starting so to the right? How do I get it to start in the right place without changing left and run-text width? */
-
     color: blue;
-    /* left: 50%; */
-    overflow: hidden;
+    -webkit-text-stroke: 16px blue;
+    filter:blur(5px) drop-shadow(0px 0px 5px blue);
+    /* adding padding so that top of text doesn't get cut off */
+    padding-block-start: 20px;
+    overflow: visible;
     display:block;
     transform: translate(0%, -100%);
     width: 100%;
-    animation: run-text 5s infinite linear;
+    animation-name: run-text;
+    animation-duration: var(--lyrics_speed, 10s);
+    animation-iteration-count: 1;
+    animation-timing-function:linear;
+
     /* text-shadow: 0 0 3px rgba(255, 255, 255, 1); */
     
 }
@@ -291,25 +311,39 @@ canvas {
 .mv {
     position:fixed;
     z-index: -1;
-    top:0;
-    left:0;
-    background:yellow;
-    width:100%;
-    height:100%;
+    top:50%;
+    left:50%;
+    /* moved it up a little to make room for lyrics */
+    transform: translate(-50%, -60%);
+    background:black;
+    width:calc(80vh - 2.5em);
+    aspect-ratio:1;
     display:flex;
     flex-flow:column wrap;
     justify-content:center;
     align-content:center;
     overflow:hidden;
+
+    border-radius:50%;
+
+        box-shadow: 
+                0 0 1vw 1vw black,
+                0 0 2vw 0vw #FFCA14,
+                0 0 3vw 0vw #FF3E00;
+    
+        filter: drop-shadow(5px 5px 10px white);
+
+        /* ?? why doesn't this seem to be working? */
+    transition: opacity 4s ease;
+        opacity: 0;
 }
 
 .mv video {
-    margin-top:-20px;
     filter:blur(70px);
-    min-width:110%;
-    /* ??Not sure this will work since not all the vids have the same aspect-ratio */
-    /* but min-height:110% made width smaller than 110% :( */
-    aspect-ratio: 9/16;
+    min-width:160%;
+    min-height:140%;
+    transition: filter 0.3s ease, opacity 4s ease;
+    opacity:0;
 }
 
 @keyframes run-text {
@@ -321,6 +355,7 @@ canvas {
         clip-path: polygon(0 0, 100% 0%, 100% 100%, 0% 100%)
     }
 }
+
 
 .screenshot {
     width: 1em;
@@ -336,18 +371,18 @@ canvas {
     z-index: 10;
     width:1em;
     height:1em;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
+    border-radius: 100%;
+    top: 0;
+    /* transform: translate(-50%, -50%); */
 
 
     background: yellow no-repeat center;
     background-size: 100% 100%;
 
-    transition: all .5s ease-in-out;
+    /* transition: all .5s ease-in-out; */
     
     filter: drop-shadow(0px 0px 15px white);
 
-    /* animation: bounce 2s ease-in-out infinite; */
 }
 
 
@@ -364,7 +399,6 @@ canvas {
 
     100% {
         transform: translateY(0);
-        /* left: calc(100% - 50px); */
     }
 }
 
@@ -447,10 +481,10 @@ canvas {
 }
 
 @keyframes pulse {
-    0% {transform: scale(0.8)}
-     90% {transform: scale(0.1)
+    0% {transform: scale(0.6)}
+     80% {transform: scale(0.3)
     } 
-     100% {transform: scale(0.8)}
+     100% {transform: scale(0.6)}
 
      /* ??this is doing a weird drop before ascending? */
      /* 
@@ -466,4 +500,66 @@ canvas {
              transform: scale(0.45) translateY(-100vh)
          }
           */
+}
+
+.bg {
+    font-size: 20px;
+    line-height: 1.2em;
+    position: fixed;
+    top: 1.5em;
+    left: 0;
+    z-index: -100;
+    pointer-events:none;
+}
+
+.star_1 p, .star_2 p, .star_3 p {
+    display:inline-block;
+}
+
+.star-1, .star-2, .star-3 {
+    display: inline-block;
+    /* background:rgba(255,255,255,.3); */
+}
+
+.star-1 p {
+    animation: pulse 6s linear infinite, glow 1s ease-in-out infinite alternate;
+    
+}
+
+.star-2 p {
+    animation: pulse 5s linear infinite,
+        glow 2s ease-in-out infinite alternate;
+        animation-delay: .5s;
+        transform: scale(0.85);
+}
+
+.star-3 p {
+    animation: pulse 4s linear infinite,
+        glow 3s ease-in-out infinite alternate;
+    animation-delay: 1s;
+    transform: scale(0.75);
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px white, 0 0 40px white, 0 0 50px white, 0 0 60px white, 0 0 70px white;
+    }
+
+    to {
+        text-shadow: 0 0 20px #fff, 0 0 30px #FFCA14, 0 0 40px #FFCA14, 0 0 50px #FFCA14, 0 0 60px #FFCA14, 0 0 70px #FFCA14, 0 0 80px #FFCA14;
+    }
+}
+
+@keyframes glow_small {
+    0% {
+        text-shadow: 0 0 0px white, 0 0 px white, 0 0 0px white;
+    }
+
+    50% {
+        text-shadow: 0 0 0px white, 0 0 px white, 0 0 0px white;
+    }
+
+    100% {
+        text-shadow: 0 0 5px #FFCA14, 0 0 6px #FFCA14, 0 0 7px #FFCA14;
+    }
 }

@@ -4,66 +4,43 @@ const mouthCanvasElement = document.getElementsByClassName("mouth_canvas")[0];
 const mouthCanvasCtx = mouthCanvasElement.getContext("2d");
 const textbox = document.querySelector(".textbox");
 const screenshot = document.querySelector(".screenshot");
-const bb = document.querySelector(".bouncing_ball");
+// const bb = document.querySelector(".bouncing_ball");
 const disco = document.querySelector(".disco_ball");
-const audio = document.querySelector("audio");
-const mv = document.querySelector(".mv video");
+let lyrics = document.querySelector(".lyrics");
 
-let words = "";
-let wordcount = null;
-let word_num = 0;
-let beat_time = null;
+const bg = document.querySelector(".bg");
 
-let index = 0;
-let time = 0;
+let bg_texts = [
+    "As a matter of fact, in our time the intense attachment to one's native land is often viewed as an unnecessary and anachronic feeling that tends to debilitate migrants. I would even argue that, for many displaced people, nostalgia is also blended with fear — the fear of uncertainty and of facing the challenges posed by the larger world and the fear of the absence of the clarity and confidence provided by the past.",
 
-let beat_passed = true;
+    "In essence, nostalgia is associated mostly with the experience of a particular type of migrants, namely, exiles. For most migrants, this attachment can become unreasonable and even unjustified, as the narrator of Salmon Rushdie's novel <em>Shame</em> refutes: &#8220; We know the force of gravity, but not its origins; and to explain why we become attached to our birthplaces we pretend that we are trees and speak of roots. Look under your feet. You will not find gnarled growths sprouting through the soles. Roots, I sometimes think, are a conservative myth, designed to keep us in places.&#8221;",
 
-const lyrics_texts = [
-    "UAU IAUYAO CUN NAN CAU DAO PEI",
-    "UAU HAN TAO CUN BAI CAU DAO HEI",
-    "UAU IAUYAO REN MEN DOU KAN DAO UA",
-    "DAN BU ZHI DAO UA SHI SHEI",
+    "The debunking of the tree metaphor makes it clear that human beings are different from trees and should be rootless and entirely mobile. This is indeed a radical idea, which, in a way, the novel dramatizes, just as its protagonist Omar Khayyam is destroyed after he returns to his native place.",
+
+    "But human beings are not always rational animals, and even the same narrator in <em>Shame</em> cannot help but feel shamefaced at times and admits, &#8220; And to come to the 'roots' idea, I should say that I haven't managed to shake myself free of it completely. Sometimes I do see myself as a tree, even, rather grandly, as the ash Yggdrasil, the mythical world-tree of Norse legend.&#8221;",
+
+    "What is fundamental here is the playfulness manifested in the metaphor of the ash Yggdrasil, which, existing in the domain of Scandinavian mythology, has little to do with the narrator's native place, but which is transplanted into his being through artistic imagination.",
+
+    "对 于 表 达 者 来 说， 你 离 开 母 语 世 界 会 意 味 这 种 新 的 语 言 去 表 达， 去 表 达 自 己。 就， 其 实 这 个 事 情 是 伴 随 着 一 些 这 种 状 态 独 有 的 挑 战 的。 我 们 都 算 是， 如 果 中 文 世 界 是 个 星 球， 我 们 就 是 外 面 那 个 小 行 星。 我 们 的 身 份 已 经 很， 已 经 离 这 个 中 心 非 常 非 常 的 远 了。",
 ];
 
-// const words_per_lines = [];
-// for (let i = 0; i < lyrics_texts.length; i++) {
-//     const words_per_line = [word_count(lyrics_texts[i])];
-//     words_per_lines.push(words_per_line);
-// }
-// console.log(words_per_lines);
+bg_texts = bg_texts.map(function (bg_words) {
+    return bg_words.split(" ");
+});
 
-let lyrics_index = -1;
-
-let lyrics = document.querySelector(".lyrics");
+let l_index = 0;
 
 let textHeight;
 let textHeight_max = 90;
-let filter = 8;
-let filter_max = 8;
-let bb_height_max = 100;
 
-let song_chosen = false;
 //global booleans
+let song_chosen = false;
 let ended = false;
 
 //AUDIO CTX
-document.addEventListener("click", init_audio);
 
 function init_audio() {
     const audioContext = new AudioContext();
-
-    //??Trying to calculate bpm
-    // const song_source = audioContext.createMediaElementSource(audio);
-    // song_source.connect(audioContext.destination);
-    // // Create a new instance of a BPM detector
-    // const detector = new window.BPM();
-
-    // // Analyze the audio file and get the BPM
-    // detector.on("bpm", function (bpm) {
-    //     console.log(`BPM: ${bpm}`);
-    // });
-    // song_source.connect(detector);
 
     navigator.mediaDevices
         .getUserMedia({ audio: true })
@@ -72,7 +49,6 @@ function init_audio() {
             const analyser = audioContext.createAnalyser();
             analyser.fftSize = 512;
             source.connect(analyser);
-            // console.log(source);
 
             setInterval(() => {
                 const bufferLength = analyser.frequencyBinCount;
@@ -82,210 +58,147 @@ function init_audio() {
                     dataArray.reduce((sum, value) => sum + value) /
                     bufferLength;
                 const size = map(average, 0, 80, 1, 5);
+                let filter;
+                let opacity;
+                if (average <= 15) {
+                    filter = map(average, 0, 15, 70, 5);
+                    opacity = map(average, 0, 15, 0.2, 1);
+                } else {
+                    filter = 5;
+                    opacity = 1;
+                }
 
                 // console.log("average is" + average);
-                disco.style.transform = `scale(${(size, size)})`;
-                bb.style.transform = `translateY(-${Math.floor(
-                    map(average, 0, 80, 0, bb_height_max)
-                )}vh)`;
+                // bb.style.transform = `translateY(-${Math.floor(
+                //     map(average, 0, 80, 0, bb_height_max)
+                // )}vh)`;
 
-                // disco.style.width = size * 10 + "px";
-                // disco.style.height = size * 10 + "px";
+                mv.style.filter = `blur(${filter}px)`;
+                mv.style.opacity = opacity;
             }, 50);
         })
         .catch((err) => {
             console.error(err);
         });
-
-    document.removeEventListener("click", init_audio);
-}
-
-song_choices.forEach(function (song_choice) {
-    song_choice.addEventListener("click", function () {
-        song_chosen = true;
-
-        remove_black_screen();
-        countdown(4);
-    });
-});
-
-function countdown(count) {
-    if (count == 0) {
-        faceMesh.onResults(onResults);
-        document.querySelector(".countdown").style.opacity = 0;
-        setTimeout(() => {
-            document.querySelector(".countdown").style.display = "none";
-        }, 500);
-    } else {
-        count--;
-        document.querySelector(".countdown .count").innerHTML = count;
-        setTimeout(() => countdown(count), 1000);
-    }
 }
 
 //FACEMESH STUFF
 // Results Handler
-function onResults(results) {
-    //need this if statement, or else video freezes when it can't find the multiFaceLandmarks (e.g. when user has turned their head away from the camera)
-    if (results.multiFaceLandmarks && !ended) {
-        if (!song_chosen) return;
-        start_song();
-        let bpm = 127;
-        //??This beat time doesn't seem to be calculated correctly??
-        beat_time = ((bpm / 60) * 1000) / 2;
+// function onResults(results) {
+//     //need this if statement, or else video freezes when it can't find the multiFaceLandmarks (e.g. when user has turned their head away from the camera)
+//     if (results.multiFaceLandmarks && !ended) {
+//         //needs [0] bc the array of results.multiFaceLandmarks has multiple things inside it, but facemesh points are stored in [0]
+//         if (results.multiFaceLandmarks[0]) {
+//             //Facemesh/mediapipe gives the x and y values of its landmarks as percentages of the total webcam view size (where 0 is leftmost, 1 is rightmost), rather than specific numerical coordinates.
+//             let crop_x_percent = results.multiFaceLandmarks[0][212].x;
+//             let crop_y_percent = results.multiFaceLandmarks[0][164].y;
+//             let crop_width_percent =
+//                 results.multiFaceLandmarks[0][432].x - crop_x_percent;
+//             let crop_height_percent =
+//                 results.multiFaceLandmarks[0][200].y - crop_y_percent;
 
-        //needs [0] bc the array of results.multiFaceLandmarks has multiple things inside it, but facemesh points are stored in [0]
-        if (results.multiFaceLandmarks[0]) {
-            //Facemesh/mediapipe gives the x and y values of its landmarks as percentages of the total webcam view size (where 0 is leftmost, 1 is rightmost), rather than specific numerical coordinates.
-            let crop_x_percent = results.multiFaceLandmarks[0][212].x;
-            let crop_y_percent = results.multiFaceLandmarks[0][164].y;
-            let crop_width_percent =
-                results.multiFaceLandmarks[0][432].x - crop_x_percent;
-            let crop_height_percent =
-                results.multiFaceLandmarks[0][200].y - crop_y_percent;
+//             // multiply the percentages by the mouthCanvasElement to get their absolute x,y values, rather than just percentages
+//             let crop_x = crop_x_percent * mouthCanvasElement.width;
+//             let crop_y = crop_y_percent * mouthCanvasElement.height;
+//             let crop_width = crop_width_percent * mouthCanvasElement.width;
+//             let crop_height = crop_height_percent * mouthCanvasElement.height;
 
-            // multiply the percentages by the mouthCanvasElement to get their absolute x,y values, rather than just percentages
-            let crop_x = crop_x_percent * mouthCanvasElement.width;
-            let crop_y = crop_y_percent * mouthCanvasElement.height;
-            let crop_width = crop_width_percent * mouthCanvasElement.width;
-            let crop_height = crop_height_percent * mouthCanvasElement.height;
+//             mouthCanvasCtx.save();
 
-            mouthCanvasCtx.save();
+//             clear_canvas();
 
-            clear_canvas();
+//             mouthCanvasCtx.drawImage(
+//                 results.image,
+//                 crop_x,
+//                 crop_y,
+//                 crop_width,
+//                 crop_height,
+//                 0,
+//                 0,
+//                 mouthCanvasElement.width,
+//                 mouthCanvasElement.height
+//             );
 
-            mouthCanvasCtx.drawImage(
-                results.image,
-                crop_x,
-                crop_y,
-                crop_width,
-                crop_height,
-                0,
-                0,
-                mouthCanvasElement.width,
-                mouthCanvasElement.height
-            );
+//             let screenshot_data = mouthCanvasElement.toDataURL("image/png");
 
-            let screenshot_data = mouthCanvasElement.toDataURL("image/png");
-            bounce_ball(screenshot_data);
-            log_beat();
+//             mouthCanvasCtx.restore();
+//         }
+//     }
+// }
 
-            mouthCanvasCtx.restore();
-        }
-    }
+function start_song() {
+    if (!song_chosen) return;
+
+    let bpm = 127;
+    //??This beat time doesn't seem to be calculated correctly??
+    beat_time = ((bpm / 60) * 1000) / 2;
 }
 
 function bounce_ball(screenshot_data) {
     bb.style.backgroundImage = `url(${screenshot_data})`;
 }
 
-function log_beat() {
-    //changing lyrics
-    if (word_num >= wordcount) {
-        console.log("changing lyrics");
-        word_num = 0;
-        lyrics_index++;
-        change_lyrics();
-    } else if (beat_passed) {
-        beat_passed = false;
-        word_num++;
-        console.log("wordnum", word_num);
-
-        setTimeout(() => (beat_passed = true), beat_time);
-    }
-}
-
 function change_lyrics() {
     const lyrics_span = document.querySelector(".span_lyrics");
+
+    //restarting run-text animation
+    lyrics_span.classList.remove("span_lyrics");
+    lyrics_span.style.animation = "none";
+    lyrics_span.offsetHeight; /* trigger reflow */
+    lyrics_span.style.animation = null;
+    lyrics_span.classList.add("span_lyrics");
+
     lyrics = document.querySelector(".lyrics");
-    console.log(lyrics);
+    // console.log(lyrics);
+    if (l_index > lyrics_texts.length - 1) l_index = 0;
+    lyrics.innerHTML = lyrics_texts[l_index];
 
-    if (lyrics_index > lyrics_texts.length - 1) lyrics_index = 0;
-    lyrics.innerHTML = lyrics_texts[lyrics_index];
+    lyrics_span.dataset.text = lyrics_texts[l_index];
 
-    lyrics.innerHTML = lyrics.textContent.replace(
-        /\b\w+\b/g,
-        "<span class='word' >$&</span>"
+    //changing the speed of the blue lyrics animation
+    // const lyrics_span_after = window.getComputedStyle(lyrics_span, "::after");
+
+    lyrics_span.style.setProperty(
+        "--lyrics_speed",
+        lyrics_durations[l_index] + "s"
     );
 
-    words = document.querySelectorAll(".word");
-    wordcount = words.length;
-    console.log("wordcount", wordcount);
-
-    lyrics_span.dataset.text = lyrics_texts[lyrics_index];
-
-    bouncing();
-}
-
-change_lyrics();
-function bouncing() {
-    const words = document.querySelectorAll(".word");
-    const word_positions = [];
-    if (!words) return;
-
-    const time = 0.5;
-
-    words.forEach(function (word) {
-        const rect = word.getBoundingClientRect();
-        const top = rect.top - rect.height / 2;
-        const left = rect.left + rect.width / 2;
-
-        word_positions.push({
-            top: top,
-            left: left,
-        });
-    });
-
-    bounce_animation(word_positions);
-}
-
-//??Figure out animations
-function bounce_animation(word_pos) {
-    const arr = word_pos;
-    let ind = 0;
-    const animate = () => {
-        if (arr.length <= 0) return;
-        bb.style.top = arr[ind].top + "px";
-
-        bb.style.left = arr[ind].left + "px";
-        arr.shift();
-        // console.log("animating");
-        // requestAnimationFrame(animate);
-        setTimeout(() => animate(), 500);
-    };
-    animate();
+    setTimeout(() => {
+        change_lyrics();
+    }, lyrics_durations[l_index] * 1000);
+    l_index++;
 }
 
 // Create Facemesh
-const faceMesh = new FaceMesh({
-    locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
-    },
-});
+// const faceMesh = new FaceMesh({
+//     locateFile: (file) => {
+//         return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+//     },
+// });
 
 // Options
-faceMesh.setOptions({
-    maxNumFaces: 1,
-    refineLandmarks: true,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-});
+// faceMesh.setOptions({
+//     maxNumFaces: 1,
+//     refineLandmarks: true,
+//     minDetectionConfidence: 0.5,
+//     minTrackingConfidence: 0.5,
+// });
 
 // Event Listener
 // faceMesh.onResults(onResults);
 
 // Create Camera
-const camera = new Camera(videoElement, {
-    onFrame: async () => {
-        await faceMesh.send({ image: videoElement });
-    },
-    //These width and height are the dimensions of the original canvas, that then gets stretched to 100vw and 100vh to cover the whole screen in the css stylesheet
-    width: 1280,
-    height: 720,
-});
+// const camera = new Camera(videoElement, {
+//     onFrame: async () => {
+//         await faceMesh.send({ image: videoElement });
+//     },
+//     //These width and height are the dimensions of the original canvas, that then gets stretched to 100vw and 100vh to cover the whole screen in the css stylesheet
+//     width: 1280,
+//     height: 720,
+// });
 
 // Start Cam
-camera.start();
+// camera.start();
 
 // ===============================
 //General / reusable functions
@@ -302,10 +215,6 @@ function map(in_val, in_min, in_max, out_min, out_max) {
 
 // const round = (val) => Math.ceil(val / 20) * 20;
 
-function word_count(str) {
-    return str.split(" ").length;
-}
-
 function remove_black_screen() {
     document.querySelector(".black_screen").style.opacity = 0;
     setTimeout(() => {
@@ -313,57 +222,90 @@ function remove_black_screen() {
     }, 500);
 }
 
-function start_song() {
-    audio.play();
-    mv.play();
-}
-
-function clear_canvas() {
-    mouthCanvasCtx.clearRect(
-        0,
-        0,
-        mouthCanvasElement.width,
-        mouthCanvasElement.height
-    );
-}
+// function clear_canvas() {
+//     mouthCanvasCtx.clearRect(
+//         0,
+//         0,
+//         mouthCanvasElement.width,
+//         mouthCanvasElement.height
+//     );
+// }
 
 //making stars
-function createStars() {
-    const starTargetSize = 75;
-    const starMinSize = 15;
-    const starChance = 0.1;
-    const scrollWidth = document.scrollingElement.scrollWidth;
-    const scrollHeight = document.scrollingElement.scrollHeight;
-    const rows = Math.round(scrollHeight / starTargetSize);
-    const columns = Math.round(scrollWidth / starTargetSize);
-    const w = Math.floor(scrollWidth / columns);
-    const h = scrollHeight / rows;
+// function createStars() {
+//     const starTargetSize = 75;
+//     const starMinSize = 15;
+//     const starChance = 0.1;
+//     const scrollWidth = document.scrollingElement.scrollWidth;
+//     const scrollHeight = document.scrollingElement.scrollHeight;
+//     const rows = Math.round(scrollHeight / starTargetSize);
+//     const columns = Math.round(scrollWidth / starTargetSize);
+//     const w = Math.floor(scrollWidth / columns);
+//     const h = scrollHeight / rows;
 
-    const fragment = document.createDocumentFragment();
+//     const fragment = document.createDocumentFragment();
 
-    for (let y = 0; y < rows; ++y) {
-        for (let x = 0; x < columns; ++x) {
-            if (Math.random() < starChance) {
-                const size =
-                    starMinSize +
-                    Math.random() * (starTargetSize - starMinSize);
-                fragment.appendChild(getStar(x, y, w, h, size));
-            }
-        }
-    }
+//     for (let y = 0; y < rows; ++y) {
+//         for (let x = 0; x < columns; ++x) {
+//             if (Math.random() < starChance) {
+//                 const size =
+//                     starMinSize +
+//                     Math.random() * (starTargetSize - starMinSize);
+//                 fragment.appendChild(getStar(x, y, w, h, size));
+//             }
+//         }
+//     }
 
-    document.body.appendChild(fragment);
+//     document.body.appendChild(fragment);
+// }
+
+// function getStar(x, y, w, h, size) {
+//     const star = document.createElement("div");
+//     star.className = `background-star background-star-${Math.ceil(
+//         Math.random() * 3
+//     )}`;
+//     star.style.left = `${Math.floor(x * w)}px`;
+//     star.style.top = `${Math.floor(y * h)}px`;
+//     star.style.width = Math.floor(size) + "px";
+//     star.style.height = Math.floor(size) + "px";
+//     return star;
+// }
+
+function randomize(min, max) {
+    return min + Math.random() * (max - min);
 }
 
-createStars();
-function getStar(x, y, w, h, size) {
-    const star = document.createElement("div");
-    star.className = `background-star background-star-${Math.ceil(
-        Math.random() * 3
-    )}`;
-    star.style.left = `${Math.floor(x * w)}px`;
-    star.style.top = `${Math.floor(y * h)}px`;
-    star.style.width = Math.floor(size) + "px";
-    star.style.height = Math.floor(size) + "px";
-    return star;
+function createStars() {
+    const starMaxSize = 30;
+    const starMinSize = 10;
+    const random_num = Math.floor(randomize(0, bg_texts.length));
+    const random_bgtext = bg_texts[random_num];
+
+    const character_count = random_bgtext.length;
+    console.log("character count", character_count);
+
+    let margin = 100 - character_count / 1.5;
+
+    console.log(random_num);
+    console.log(random_bgtext);
+
+    for (let i = 0; i < random_bgtext.length; i++) {
+        const fontsize = randomize(starMinSize, starMaxSize);
+
+        const vertical_shift = randomize(-50, 50);
+
+        const star = document.createElement("div");
+        const p = document.createElement("p");
+
+        star.appendChild(p);
+        bg.appendChild(star);
+
+        star.className = `star-${Math.ceil(Math.random() * 3)}`;
+        p.innerHTML = random_bgtext[i];
+
+        p.style.fontSize = fontsize + "px";
+        star.style.margin = margin + "px";
+        // p.style.verticalAlign = vertical_shift + "px";
+        star.style.transform = `translateY(${vertical_shift}px)`;
+    }
 }
