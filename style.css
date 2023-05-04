@@ -30,7 +30,8 @@ body {
         font-weight: 400;
         font-style: normal; */
     font-family: "tt-songti-chs-variable", sans-serif;
-    font-size: clamp(1rem, 13vw, 5rem);
+    /* font-size: clamp(1rem, 7vw, 5rem); */
+    font-size: 3vw;
     line-height: clamp(1rem, 13vw, 5rem);
     color: white;
     text-align:center;
@@ -55,6 +56,10 @@ body {
     font-size:.5em;
 
     /* display:none; */
+}
+
+.prompt {
+    font-size:.75em;
 }
 
 .carousel {
@@ -111,6 +116,55 @@ body {
     animation-play-state: paused;
 }
 
+.countdown .carousel {
+    width:80vmin;
+    height:80vmin;
+    aspect-ratio: 1;
+    margin:0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events:none;
+
+    position: fixed;
+        z-index: -100;
+    /* background: pink; */
+
+    /* ??For some reason carousel_item is still somehow affecting the other carousel items on screen?? So I changed its name to carousel_item_b */
+    display:none;
+}
+
+.countdown .carousel_bg {
+    width: 60%;
+        aspect-ratio: 1;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+}
+
+.countdown .carousel_item_b {
+        position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation:
+                move-x 10s linear infinite,
+                move-y 10s linear infinite,
+                glow_small 1s ease-in-out infinite alternate;
+        
+            white-space: nowrap;
+        
+            filter: drop-shadow(0px 0px 5px white);
+}
+.carousel_item_b * {
+    transform: skew(-15deg, 0deg);
+}
+
+.carousel:hover .carousel_item_b {
+    animation-play-state: paused;
+}
+
 .blackhole_bg {
     position: fixed;
     z-index:-1;
@@ -139,13 +193,15 @@ body {
     flex-flow:column wrap;
     justify-content: center;
     align-content: center;
+    font-size:.75em;
 
     transition: opacity 0.5s;
 
 }
 
 .countdown .count {
-    
+    margin-top: .25em;
+    font-size:3em;
 }
 
 /* KARAOKE PAGE */
@@ -156,7 +212,7 @@ body {
     opacity: .75;
     font-size:.5em;
     top:.25em;
-    left:.5em;
+    left:1em;
     cursor: pointer;
 }
 
@@ -519,6 +575,7 @@ canvas {
 .star-1, .star-2, .star-3 {
     display: inline-block;
     /* background:rgba(255,255,255,.3); */
+    text-shadow: 0 0 20px #fff, 0 0 30px #FFCA14, 0 0 40px #FFCA14, 0 0 50px #FFCA14, 0 0 60px #FFCA14, 0 0 70px #FFCA14, 0 0 80px #FFCA14;
 }
 
 .star-1 p {
@@ -542,12 +599,19 @@ canvas {
 
 @keyframes glow {
     from {
+           filter:brightness(1);
+        }
+        to {
+            filter: brightness(1.5);
+        }
+    /* this was overloading the browser and causing lag */
+    /* from {
         text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px white, 0 0 40px white, 0 0 50px white, 0 0 60px white, 0 0 70px white;
     }
 
     to {
         text-shadow: 0 0 20px #fff, 0 0 30px #FFCA14, 0 0 40px #FFCA14, 0 0 50px #FFCA14, 0 0 60px #FFCA14, 0 0 70px #FFCA14, 0 0 80px #FFCA14;
-    }
+    } */
 }
 
 @keyframes glow_small {
