@@ -1,6 +1,7 @@
 let lyrics_texts = [];
 let lyrics_changes = [];
 let lyrics_durations = [];
+let volume = 1;
 
 const back_btn = document.querySelector(".back");
 
@@ -46,6 +47,7 @@ song_choices.forEach(function (song_choice) {
 
 qlx.addEventListener("click", function () {
     countdown(qlx);
+    volume = 0.6;
     lyrics_texts = [
         "...",
         "Chuangwai de ma que tsai tyan xien kan shang duo tsui",
@@ -229,6 +231,7 @@ hd.addEventListener("click", function () {
 
 ghsy.addEventListener("click", function () {
     countdown(ghsy);
+    volume = 0.6;
     lyrics_texts = [
         "...",
         "Zung sen syang chyi kuey jiar de shun ho",
@@ -345,6 +348,7 @@ ghsy.addEventListener("click", function () {
 
 lydia.addEventListener("click", function () {
     countdown(lydia);
+    volume = 0.5;
     lyrics_texts = [
         "...",
         "Lydia mi li de yan kuang",
@@ -540,6 +544,7 @@ lian.addEventListener("click", function () {
 
 sqbm.addEventListener("click", function () {
     countdown(sqbm);
+    volume = 0.6;
     lyrics_texts = [
         "...",
         "Ngoh oi shei kua bu guo cong lai ye bu jue de cuo",
@@ -689,6 +694,7 @@ function countdown(song_choice) {
         }, 500);
 
         mv.play();
+        mv.volume = volume;
         change_lyrics();
         init_audio();
 
