@@ -25,11 +25,11 @@ let bg_texts = [
 
     "It was probably meant to be like this. Each of us has a star to follow. So now what are you thinking of doing? <br> Do like the soldier, Toto! Go away! This land is cursed.",
 
-    "When you're here every day you feel like you're at the center of the universe, it seems like nothing ever changes. Then you go away, one year, two...And when you come back, everything's different. The thread has broken. You don't find those you were looking for, your things no longer exist. Isn't that the case?...You've got to go away a long time, for many, many years, before coming back and finding your people again, the land where you were born...But not now, it's impossible. Now you're blinder than I am.",
+    "When you're here every day you feel like you're at the center of the universe, it seems like nothing ever changes. Then you go away, one year, two... And when you come back, everything's different. The thread has broken. You don't find those you were looking for, your things no longer exist. Isn't that the case? ... You've got to go away a long time, for many, many years, before coming back and finding your people again, the land where you were born... But not now, it's impossible. Now you're blinder than I am.",
 
     "Don't come back any more, don't think about us, don't turn round, don't write, don't give in to nostalgia. Forget us all. If you can't hear it and come back, don't come looking for me, I won't let you into the house, you understand?",
 
-    "It's just that I was scared of coming back. Now, after all these years, I thought I was strong, that I had forgotten lots of things. Instead, I find it's quite the opposite, as if I had never left. And yet, I look at Lia and feel as if I didn't know her, and you, Mamma...I abandoned you, ran away like a thief, thought only of myself, and never gave you an explanation...",
+    "It's just that I was scared of coming back. Now, after all these years, I thought I was strong, that I had forgotten lots of things. Instead, I find it's quite the opposite, as if I had never left. And yet, I look at Lia and feel as if I didn't know her, and you, Mamma... I abandoned you, ran away like a thief, thought only of myself, and never gave you an explanation...",
 
     "And I never asked for one! You have nothing to explain. I always thought that what you did was right, and that was that. With no beating around the bush... But your life's there. Here there are nothing but ghosts, Toto! Let it go.",
 ];
