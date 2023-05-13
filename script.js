@@ -77,6 +77,7 @@ function init_audio() {
                 } else {
                     filter = 5;
                     opacity = 1;
+                    console.log("volume maxed out");
                 }
 
                 // console.log("average is" + average);
