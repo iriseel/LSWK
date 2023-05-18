@@ -5,7 +5,6 @@ const mouthCanvasCtx = mouthCanvasElement.getContext("2d");
 const textbox = document.querySelector(".textbox");
 const screenshot = document.querySelector(".screenshot");
 // const bb = document.querySelector(".bouncing_ball");
-const disco = document.querySelector(".disco_ball");
 let lyrics = document.querySelector(".lyrics");
 
 const bg = document.querySelector(".bg");
@@ -81,9 +80,6 @@ function init_audio() {
                 }
 
                 // console.log("average is" + average);
-                // bb.style.transform = `translateY(-${Math.floor(
-                //     map(average, 0, 80, 0, bb_height_max)
-                // )}vh)`;
 
                 mv.style.filter = `blur(${filter}px)`;
                 mv_container.style.opacity = opacity;
@@ -94,56 +90,8 @@ function init_audio() {
         });
 }
 
-//FACEMESH STUFF
-// Results Handler
-// function onResults(results) {
-//     //need this if statement, or else video freezes when it can't find the multiFaceLandmarks (e.g. when user has turned their head away from the camera)
-//     if (results.multiFaceLandmarks && !ended) {
-//         //needs [0] bc the array of results.multiFaceLandmarks has multiple things inside it, but facemesh points are stored in [0]
-//         if (results.multiFaceLandmarks[0]) {
-//             //Facemesh/mediapipe gives the x and y values of its landmarks as percentages of the total webcam view size (where 0 is leftmost, 1 is rightmost), rather than specific numerical coordinates.
-//             let crop_x_percent = results.multiFaceLandmarks[0][212].x;
-//             let crop_y_percent = results.multiFaceLandmarks[0][164].y;
-//             let crop_width_percent =
-//                 results.multiFaceLandmarks[0][432].x - crop_x_percent;
-//             let crop_height_percent =
-//                 results.multiFaceLandmarks[0][200].y - crop_y_percent;
-
-//             // multiply the percentages by the mouthCanvasElement to get their absolute x,y values, rather than just percentages
-//             let crop_x = crop_x_percent * mouthCanvasElement.width;
-//             let crop_y = crop_y_percent * mouthCanvasElement.height;
-//             let crop_width = crop_width_percent * mouthCanvasElement.width;
-//             let crop_height = crop_height_percent * mouthCanvasElement.height;
-
-//             mouthCanvasCtx.save();
-
-//             clear_canvas();
-
-//             mouthCanvasCtx.drawImage(
-//                 results.image,
-//                 crop_x,
-//                 crop_y,
-//                 crop_width,
-//                 crop_height,
-//                 0,
-//                 0,
-//                 mouthCanvasElement.width,
-//                 mouthCanvasElement.height
-//             );
-
-//             let screenshot_data = mouthCanvasElement.toDataURL("image/png");
-
-//             mouthCanvasCtx.restore();
-//         }
-//     }
-// }
-
 function start_song() {
     if (!song_chosen) return;
-
-    let bpm = 127;
-    //??This beat time doesn't seem to be calculated correctly??
-    beat_time = ((bpm / 60) * 1000) / 2;
 }
 
 function bounce_ball(screenshot_data) {
@@ -181,37 +129,6 @@ function change_lyrics() {
     l_index++;
 }
 
-// Create Facemesh
-// const faceMesh = new FaceMesh({
-//     locateFile: (file) => {
-//         return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
-//     },
-// });
-
-// Options
-// faceMesh.setOptions({
-//     maxNumFaces: 1,
-//     refineLandmarks: true,
-//     minDetectionConfidence: 0.5,
-//     minTrackingConfidence: 0.5,
-// });
-
-// Event Listener
-// faceMesh.onResults(onResults);
-
-// Create Camera
-// const camera = new Camera(videoElement, {
-//     onFrame: async () => {
-//         await faceMesh.send({ image: videoElement });
-//     },
-//     //These width and height are the dimensions of the original canvas, that then gets stretched to 100vw and 100vh to cover the whole screen in the css stylesheet
-//     width: 1280,
-//     height: 720,
-// });
-
-// Start Cam
-// camera.start();
-
 // ===============================
 //General / reusable functions
 // https://gist.github.com/xposedbones/75ebaef3c10060a3ee3b246166caab56
@@ -221,65 +138,11 @@ function map(in_val, in_min, in_max, out_min, out_max) {
     );
 }
 
-// function lerp(start, end, time) {
-//     return start * (1 - time) + end * time;
-// }
-
-// const round = (val) => Math.ceil(val / 20) * 20;
-
-// function clear_canvas() {
-//     mouthCanvasCtx.clearRect(
-//         0,
-//         0,
-//         mouthCanvasElement.width,
-//         mouthCanvasElement.height
-//     );
-// }
-
-//making stars
-// function createStars() {
-//     const starTargetSize = 75;
-//     const starMinSize = 15;
-//     const starChance = 0.1;
-//     const scrollWidth = document.scrollingElement.scrollWidth;
-//     const scrollHeight = document.scrollingElement.scrollHeight;
-//     const rows = Math.round(scrollHeight / starTargetSize);
-//     const columns = Math.round(scrollWidth / starTargetSize);
-//     const w = Math.floor(scrollWidth / columns);
-//     const h = scrollHeight / rows;
-
-//     const fragment = document.createDocumentFragment();
-
-//     for (let y = 0; y < rows; ++y) {
-//         for (let x = 0; x < columns; ++x) {
-//             if (Math.random() < starChance) {
-//                 const size =
-//                     starMinSize +
-//                     Math.random() * (starTargetSize - starMinSize);
-//                 fragment.appendChild(getStar(x, y, w, h, size));
-//             }
-//         }
-//     }
-
-//     document.body.appendChild(fragment);
-// }
-
-// function getStar(x, y, w, h, size) {
-//     const star = document.createElement("div");
-//     star.className = `background-star background-star-${Math.ceil(
-//         Math.random() * 3
-//     )}`;
-//     star.style.left = `${Math.floor(x * w)}px`;
-//     star.style.top = `${Math.floor(y * h)}px`;
-//     star.style.width = Math.floor(size) + "px";
-//     star.style.height = Math.floor(size) + "px";
-//     return star;
-// }
-
 function randomize(min, max) {
     return min + Math.random() * (max - min);
 }
 
+//function modified from https://laurelschwulst.github.io/nina-alan.world/
 function createStars() {
     const starMaxSize = 30;
     const starMinSize = 10;

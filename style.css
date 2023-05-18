@@ -224,68 +224,6 @@ body {
     cursor: pointer;
 }
 
-/* ???Should I just get rid of the disco? */
-.disco {
-    width:15vw;
-    height:50vh;
-    position:fixed;
-    z-index:1;
-    top:0;
-    left:50%;
-    transform: translateX(-50%);
-    filter: drop-shadow(0px 0px 20px white);
-    mix-blend-mode:soft-light;
-    display:none;
-}
-
-.disco_chain {
-    position: fixed;
-    z-index: 9;
-    top:-12vh;
-    left:50%;
-    transform:translateX(-50%);
-}
-
-/* .disco_ball_container {
-    transform-origin: top center;
-    width: 10vw;
-    height:10vw;
-    animation: spin 5s linear infinite;
-} */
-
-
-.disco_ball {
-    position:fixed;
-    z-index: 10;
-    bottom:0;
-    left:0;
-    transform-origin: center;
-    width: 6vw;
-    aspect-ratio: 1;
-    background: black;
-    border-radius: 50%;
-    filter: blur(1.5px);
-
-    box-shadow: 1.5vw 0 0vw 2vw black,
-        -.25vw .25vw 4vw 0vw #FFCA14,
-        0px 0px 10vw #FF3E00;
-
-    /* animation: spin 5s linear infinite; */
-
-}
-
-
-/* ??how to make this spin on center?? */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg)
-    }
-
-    100% {
-        transform: rotate(-360deg)
-    }
-}
-
 
 img {
     max-width:100%;
@@ -421,52 +359,6 @@ canvas {
 }
 
 
-.screenshot {
-    width: 1em;
-    height: 1em;
-    /* background:pink; */
-    position: relative;
-    display:inline;
-    z-index: 3;
-}
-
-.bouncing_ball {
-    position: absolute;
-    z-index: 10;
-    width:1em;
-    height:1em;
-    border-radius: 100%;
-    top: 0;
-    /* transform: translate(-50%, -50%); */
-
-
-    background: yellow no-repeat center;
-    background-size: 100% 100%;
-
-    /* transition: all .5s ease-in-out; */
-    
-    filter: drop-shadow(0px 0px 15px white);
-
-}
-
-
-
-@keyframes bounce {
-    0% {
-        transform: translateY(0);
-        /* left: 0; */
-    }
-
-    50% {
-        transform: translateY(-100px);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
-
-
 @keyframes move-x {
     0% {
         left: 0;
@@ -550,20 +442,6 @@ canvas {
     } 
      100% {transform: scale(0.6)}
 
-     /* ??this is doing a weird drop before ascending? */
-     /* 
-         0% {
-             transform: scale(0.45) translateY(0%)
-         }
-    
-         90% {
-             transform: scale(0.1) translateY(-100vh)
-         }
-    
-         100% {
-             transform: scale(0.45) translateY(-100vh)
-         }
-          */
 }
 
 .bg {

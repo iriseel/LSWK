@@ -680,7 +680,6 @@ function add_mv(song_choice) {
 
 function countdown(song_choice) {
     if (count == 0) {
-        // faceMesh.onResults(onResults);
         start_song();
 
         document.querySelector(".countdown").style.opacity = 0;
